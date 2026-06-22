@@ -139,7 +139,7 @@ export default function App() {
     <div className="page">
       <header className="header">
         <div className="header-row">
-          <h1>La Lista</h1>
+          <h1>Lista de compra Fam Ramírez</h1>
           <span className="badge">{pendingCount} {pendingCount === 1 ? 'pendiente' : 'pendientes'}</span>
         </div>
         <p className="subtitle">Lo que falta en la despensa, al instante para los dos.</p>
