@@ -18,3 +18,4 @@ export async function uploadFamilyPhoto(file) {
   const data = await res.json()
   return data.secure_url
 }
+export const uploadPhoto = uploadFamilyPhoto
