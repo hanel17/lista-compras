@@ -328,3 +328,81 @@ function BabyForm({ initial, onSave, onCancel }) {
     </div>
   )
 }
+
+function BabyDashboard({ stats, onCreateChecklist, hasItems }) {
+  return (
+    <div className="baby-dashboard">
+      <div className="baby-dashboard__header">
+        <h2>Preparacion para el bebe</h2>
+        {!hasItems && <button className="baby-checklist-btn" onClick={onCreateChecklist}>Crear checklist inicial</button>}
+      </div>
+      <div className="baby-progress-bar"><div className="baby-progress-bar__fill" style={{ width: stats.pct + '%' }} /></div>
+      <p className="baby-progress-label">{stats.pct}% preparado - {stats.bought} de {stats.total} completados</p>
+      <div className="baby-stats-row">
+        <div className="baby-stat"><span className="baby-stat__num">{stats.pending}</span><span className="baby-stat__lbl">pendientes</span></div>
+        <div className="baby-stat"><span className="baby-stat__num baby-stat__num--red">{stats.esenciales}</span><span className="baby-stat__lbl">esenciales</span></div>
+        <div className="baby-stat"><span className="baby-stat__num">{stats.bought}</span><span className="baby-stat__lbl">comprados</span></div>
+      </div>
+      <div className="baby-budget">
+        <div className="baby-budget__row"><span>Estimado</span><strong>{fmtRD(stats.totalEst)}</strong></div>
+        <div className="baby-budget__row"><span>Gastado</span><strong style={{ color: 'var(--accent)' }}>{fmtRD(stats.totalPaid)}</strong></div>
+        <div className="baby-budget__row"><span>Pendiente</span><strong>{fmtRD(stats.totalEst - stats.totalPaid)}</strong></div>
+      </div>
+    </div>
+  )
+}
+function WhatsMissing({ items }) {
+  const missing = items.filter(i => i.priority === 'esencial' && i.status !== 'comprado' && i.status !== 'no_necesario').slice(0, 8)
+  if (!missing.length) return null
+  return (
+    <div className="baby-missing">
+      <h3>Que nos falta</h3>
+      <ul>
+        {missing.map(item => {
+          const p = PRIORITY_MAP[item.priority]
+          const s = STATUS_MAP[item.status]
+          const falta = (item.qty_needed || 1) - (item.qty_bought || 0)
+          return (
+            <li key={item.id}>
+              <span>{p?.emoji}</span>
+              <span className="baby-missing__name">{item.name}</span>
+              <span className="baby-missing__meta">{falta > 0 ? 'Faltan ' + falta : s?.label}</span>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+function BabyCard({ item, onClick }) {
+  const cat = CATEGORY_MAP[item.category]
+  const priority = PRIORITY_MAP[item.priority]
+  const status = STATUS_MAP[item.status]
+  const overdue = isOverdue(item.due_date) && item.status !== 'comprado'
+  const soon = isSoon(item.due_date) && item.status !== 'comprado'
+  return (
+    <div className={'baby-card' + (item.status === 'comprado' ? ' baby-card--done' : '') + (overdue ? ' baby-card--overdue' : '')} onClick={onClick}>
+      <div className="baby-card__photo">
+        {item.photo_url ? <img src={item.photo_url} alt={item.name} /> : <span>{cat?.icon || '📦'}</span>}
+      </div>
+      <div className="baby-card__body">
+        <div className="baby-card__top">
+          <span className="baby-card__priority">{priority?.emoji}</span>
+          <span className="baby-card__name">{item.name}</span>
+          {item.status === 'comprado' && <span className="baby-card__check">✓</span>}
+        </div>
+        <div className="baby-card__meta">
+          <span className="baby-tag" style={{ background: (status?.color || '#888') + '22', color: status?.color }}>{status?.label}</span>
+          <span className="baby-tag">{cat?.icon} {cat?.label}</span>
+        </div>
+        <div className="baby-card__bottom">
+          {item.qty_needed > 1 && <span className="baby-card__qty">{item.qty_bought || 0}/{item.qty_needed}</span>}
+          {item.price_estimated && <span className="baby-card__price">{fmtRD(item.price_estimated)}</span>}
+          {overdue && <span className="baby-card__due baby-card__due--red">Vencido</span>}
+          {soon && !overdue && <span className="baby-card__due baby-card__due--yellow">Esta semana</span>}
+        </div>
+      </div>
+    </div>
+  )
+}
+
