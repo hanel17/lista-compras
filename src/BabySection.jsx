@@ -107,6 +107,12 @@ export default function BabySection() {
     if (created) setItems(cur => [...cur, ...created])
   }
 
+  async function handleQuickBuy(item) {
+    const next = item.status === 'comprado' ? 'pendiente' : 'comprado'
+    const qtyB = next === 'comprado' ? item.qty_needed : 0
+    setItems(cur => cur.map(i => i.id === item.id ? { ...i, status: next, qty_bought: qtyB } : i))
+    await supabase.from('baby_items').update({ status: next, qty_bought: qtyB, updated_at: new Date().toISOString() }).eq('id', item.id)
+  }
   function openEdit(item) { setEditing(item); setView('form') }
   function openDetail(item) { setDetailItem(item); setView('detail') }
 
@@ -161,7 +167,7 @@ export default function BabySection() {
           {items.length === 0 ? <><p>No hay productos todavia.</p><button className="baby-checklist-btn" onClick={createChecklist}>Crear checklist inicial</button></> : <p>No hay productos con estos filtros.</p>}
         </div>
       ) : (
-        <div className="baby-grid">{filtered.map(item => <BabyCard key={item.id} item={item} onClick={() => openDetail(item)} />)}</div>
+        <div className="baby-grid">{filtered.map(item => <BabyCard key={item.id} item={item} onClick={() => openDetail(item)} onQuickBuy={handleQuickBuy} />)}</div>
       )}
     </div>
   )
@@ -374,7 +380,7 @@ function WhatsMissing({ items }) {
     </div>
   )
 }
-function BabyCard({ item, onClick }) {
+function BabyCard({ item, onClick, onQuickBuy }) {
   const cat = CATEGORY_MAP[item.category]
   const priority = PRIORITY_MAP[item.priority]
   const status = STATUS_MAP[item.status]

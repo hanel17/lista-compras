@@ -28,7 +28,7 @@ export const PRIORITIES = [
 export const RESPONSIBLES = [
   { id: 'ambos',  label: 'Ambos' },
   { id: 'hanel',  label: 'Hanel' },
-  { id: 'esposa', label: 'Esposa' },
+  { id: 'esposa', label: 'Elisa' },
 ]
 
 export const CATEGORY_MAP = Object.fromEntries(BABY_CATEGORIES.map(c => [c.id, c]))
