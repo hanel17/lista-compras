@@ -17,6 +17,10 @@ export const STATUSES = [
   { id: 'comprado',     label: 'Comprado',     color: '#4C9A5B' },
   { id: 'no_necesario', label: 'No necesario', color: '#A0A0A0' },
   { id: 'para_despues', label: 'Para después', color: '#8B6BC4' },
+  { id: 'reservado', label: 'Reservado', color: '#1565C0' },
+  { id: 'entregado', label: 'Entregado', color: '#2E7D32' },
+  { id: 'reservado', label: 'Reservado', color: '#1565C0' },
+  { id: 'entregado', label: 'Entregado', color: '#2E7D32' },
 ]
 
 export const PRIORITIES = [

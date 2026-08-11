@@ -203,7 +203,8 @@ function BabyDetail({ item, onEdit, onDelete, onBack, onToggleBought }) {
       {item.notes && <div className="baby-detail__notes"><span>Notas</span><p>{item.notes}</p></div>}
       {item.buy_link && <a className="baby-detail__link" href={item.buy_link} target="_blank" rel="noopener noreferrer">Ver producto</a>}
       <div className="baby-detail__actions">
-        <button className="baby-btn baby-btn--primary" onClick={onToggleBought}>{item.status === 'comprado' ? 'Marcar pendiente' : 'Marcar comprado'}</button>
+        {item.status === 'reservado' && (<div style={{background:'#EFF4FF',borderRadius:'12px',padding:'12px 14px',fontSize:'0.88rem',color:'#1565C0',marginBottom:'4px'}}>Alguien reservo este producto como regalo</div>)}
+        <button className="baby-btn baby-btn--primary" onClick={onToggleBought}>{item.status === 'comprado' ? 'Marcar pendiente' : item.status === 'reservado' ? 'Marcar como entregado' : 'Marcar comprado'}</button>
         <button className="baby-btn baby-btn--outline" onClick={onEdit}>Editar</button>
         <button className="baby-btn baby-btn--danger" onClick={() => { if (window.confirm('Eliminar este producto?')) onDelete() }}>Eliminar</button>
       </div>

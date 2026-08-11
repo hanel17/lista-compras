@@ -79,6 +79,7 @@ export default function BabyRegistry() {
     const qtyToReserve=Math.min(qty,available)
     const{error}=await supabase.from('baby_reservations').insert({baby_item_id:item.id,reserver_name:name.trim(),reserver_message:message.trim()||null,qty_reserved:qtyToReserve})
     if(error){alert('Ocurrió un problema. Intenta de nuevo.');return}
+    await supabase.from('baby_items').update({ status: 'reservado', updated_at: new Date().toISOString() }).eq('id', item.id)
     setReservingItem(null)
     setSuccessItem({item,name,qty:qtyToReserve})
   }
