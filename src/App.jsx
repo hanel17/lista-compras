@@ -1,3 +1,5 @@
+import BabyRegistry from './BabyRegistry.jsx'
+import './BabyRegistry.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from './supabaseClient'
 import { uploadFamilyPhoto } from './cloudinary'
@@ -22,7 +24,23 @@ function slugify(label) {
   return `${base || 'cat'}_${Math.random().toString(36).slice(2, 6)}`
 }
 
+function useHash() {
+  const [hash, setHash] = window.__hashState || [window.location.hash, null]
+  if (!window.__hashState) {
+    const [h, setH] = [window.location.hash, (v) => { window.location.hash = v }]
+    return h
+  }
+  return hash
+}
+
 export default function App() {
+  const [hash, setHash] = useState(window.location.hash)
+  window.__setHash = setHash
+
+  if (hash === '#/registry') {
+    return <BabyRegistry onBack={() => { window.location.hash = ''; setHash('') }} />
+  }
+
   const [activeTab, setActiveTab] = useState('lista')
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
